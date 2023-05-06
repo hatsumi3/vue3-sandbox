@@ -11,14 +11,19 @@ export default defineComponent({
             text: String,
             default: 'abc',
             required: true,
-            validator: (value: any) => {
+            validator: (value: String) => {
                 // 空白orNullorUndefinedはfalse
-                return value?.trim()
+                return !!value
             },
         }
     },
 })
 
-
 </script>
+
+<style scoped>
+header {
+    font-size: 32px;
+}
+</style>
 
