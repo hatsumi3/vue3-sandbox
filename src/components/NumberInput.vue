@@ -1,10 +1,13 @@
 <template>
     <input type="number" :value="modelValue" @input="emitValue" />
 </template>
+<script lang="ts">
+import { defineComponent, PropType } from "vue"
 
-<script>
+interface ModelModifiers {
+    numberOnly?: boolean
+}
 
-import { defineComponent } from "vue"
 export default defineComponent({
     emits: ['update:modelValue'],
     props: {
@@ -13,16 +16,19 @@ export default defineComponent({
             default: 0
         },
         modelModifiers: {
-            type: 
+            type: Object as PropType<ModelModifiers>,
             default: () => ({})
         }
     },
     methods: {
-        emitValue({ target: { value } }) {
+        emitValue(event: Event) {
+            const inputEvent = event as InputEvent
+            const value = (inputEvent.target as HTMLInputElement).value
+            let newValue: number = Number(value)
             if (this.modelModifiers.numberOnly && value === '') {
-                value = 0
+                newValue = 0
             }
-            this.$emit('update:modelValue', Number(value))
+            this.$emit('update:modelValue', newValue)
         }
     },
 })
