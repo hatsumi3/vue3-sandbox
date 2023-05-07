@@ -1,38 +1,36 @@
-<template>
-    <input type="number" :value="modelValue" @input="emitValue" />
-</template>
-<script lang="ts">
-import { defineComponent, PropType } from "vue"
+<script setup lang="ts">
+import { PropType } from "vue"
 
 interface ModelModifiers {
     numberOnly?: boolean
 }
 
-export default defineComponent({
-    emits: ['update:modelValue'],
-    props: {
-        modelValue: {
-            type: Number,
-            default: 0
-        },
-        modelModifiers: {
-            type: Object as PropType<ModelModifiers>,
-            default: () => ({})
-        }
+const emits = defineEmits<{
+    (e: 'update:modelValue', newValue: number): void
+}>()
+
+const props = defineProps({
+    modelValue: {
+        type: Number,
+        default: 0
     },
-    setup(props, ctx) {
-        function emitValue(event: Event) {
-            const inputEvent = event as InputEvent
-            const value = (inputEvent.target as HTMLInputElement).value
-            let newValue: number = Number(value)
-            if (props.modelModifiers.numberOnly && value === '') {
-                newValue = 0
-            }
-            ctx.emit('update:modelValue', newValue)
-        }
-        return {
-            emitValue,
-        }
-    },
-})
+    modelModifiers: {
+        type: Object as PropType<ModelModifiers>,
+        default: () => ({})
+    }
+});
+
+function emitValue(event: Event) {
+    const inputEvent = event as InputEvent
+    const value = (inputEvent.target as HTMLInputElement).value
+    let newValue: number = Number(value)
+    if (props.modelModifiers.numberOnly && value === '') {
+        newValue = 0
+    }
+    emits('update:modelValue', newValue)
+}
 </script>
+
+<template>
+    <input type="number" :value="modelValue" @input="emitValue" />
+</template>
