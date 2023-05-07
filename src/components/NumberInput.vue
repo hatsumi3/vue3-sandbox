@@ -8,6 +8,7 @@ interface ModelModifiers {
     numberOnly?: boolean
 }
 
+
 export default defineComponent({
     emits: ['update:modelValue'],
     props: {
@@ -20,15 +21,18 @@ export default defineComponent({
             default: () => ({})
         }
     },
-    methods: {
-        emitValue(event: Event) {
+    setup(props, ctx) {
+        function emitValue(event: Event) {
             const inputEvent = event as InputEvent
             const value = (inputEvent.target as HTMLInputElement).value
             let newValue: number = Number(value)
-            if (this.modelModifiers.numberOnly && value === '') {
+            if (props.modelModifiers.numberOnly && value === '') {
                 newValue = 0
             }
-            this.$emit('update:modelValue', newValue)
+            ctx.emit('update:modelValue', newValue)
+        }
+        return {
+            emitValue
         }
     },
 })

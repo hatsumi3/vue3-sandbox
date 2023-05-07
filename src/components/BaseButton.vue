@@ -8,11 +8,14 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    methods: {
-        handleClick() {
-            this.$emit('onClick')
+    setup(_, ctx) {
+        function handleClick() {
+            ctx.emit('onClick')
         }
-    }
+        return {
+            handleClick,
+        }
+    },
 })
 
 

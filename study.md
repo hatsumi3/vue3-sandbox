@@ -70,3 +70,8 @@ message 例
 
 - [公式](https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716)
 - [emoji,Issue Number 付き](https://zenn.dev/itosho/articles/git-commit-message-2023#%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88)
+
+## reactive api, ref
+
+- reactive api: object 用
+- ref: primitive 用
