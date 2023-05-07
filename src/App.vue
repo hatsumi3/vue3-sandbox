@@ -1,7 +1,7 @@
 <template>
   <TheHeader text='My Counter' />
-  <div v-if="!validationMessageList.length">{{ count }}</div>
-  <div v-else v-for="message in validationMessageList" :key="message">
+  <div v-if="!validationMessageList.values.length">{{ count }}</div>
+  <div v-else v-for="message in validationMessageList.values" :key="message">
     {{ message }}
   </div>
   <BaseButton :disabled="hasMaxCount" @click="plusOne">+</BaseButton>
@@ -13,7 +13,7 @@
 
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { ref, computed, watch, defineComponent, reactive } from "vue";
 import TheHeader from './components/TheHeader.vue'
 import BaseButton from "./components/BaseButton.vue";
 import NumberInput from "./components/NumberInput.vue"
@@ -24,58 +24,61 @@ export default defineComponent({
     BaseButton,
     NumberInput
   },
-  data() {
-    return {
-      count: 0,
-      inputCount: 0,
-      isEditing: false,
-    }
-  },
-  computed: {
-    hasMaxCount() {
-      return this.count >= 9999
-    },
-    hasMinCount() {
-      return this.count <= 0
-    },
-    hasMaxInputCount() {
-      return this.inputCount > 9999
-    },
-    hasMinInputCount() {
-      return this.inputCount < 0
-    },
-    validationMessageList() {
-      const validationList = []
-      if (this.isEditing) {
+  setup() {
+    const count = ref(0)
+    const inputCount = ref(0)
+    const isEditing = ref(false)
+
+    const hasMaxCount = computed(() => {
+      return count.value >= 9999
+    })
+    const hasMinCount = computed(() => {
+      return count.value <= 0
+    })
+    const hasMaxInputCount = computed(() => {
+      return inputCount.value > 9999
+    })
+    const hasMinInputCount = computed(() => {
+      return inputCount.value < 0
+    })
+    const validationMessageList = computed(() => {
+      const validationList = reactive<String[]>([])
+      if (isEditing) {
         validationList.push("編集中///")
       }
-      if (this.hasMaxInputCount) {
+      if (hasMaxInputCount) {
         validationList.push("9999///")
       }
-      if (this.hasMinInputCount) {
+      if (hasMinInputCount) {
         validationList.push("0///")
       }
-
       return validationList
-    }
+    })
 
-  },
-  watch: {
-    inputCount() {
-      this.isEditing = true
+    function plusOne() {
+      count.value++;
     }
-  },
-  methods: {
-    plusOne() {
-      this.count++;
-    },
-    minusOne() {
-      this.count--;
-    },
-    insertCount() {
-      if (this.hasMaxInputCount || this.hasMinInputCount) return
-      this.count = this.inputCount;
-      this.isEditing = false
+    function minusOne() {
+      count.value--;
+    }
+    function insertCount() {
+      if (hasMaxInputCount.value || hasMinInputCount.value) return
+      count.value = inputCount.value;
+      isEditing.value = false
+    }
+    watch(inputCount, () => {
+      isEditing.value = true
+    })
+    return {
+      count,
+      inputCount,
+      isEditing,
+      hasMaxCount,
+      hasMinCount,
+      validationMessageList,
+      plusOne,
+      minusOne,
+      insertCount,
     }
   }
 })

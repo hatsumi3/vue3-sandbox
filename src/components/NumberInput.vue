@@ -8,7 +8,6 @@ interface ModelModifiers {
     numberOnly?: boolean
 }
 
-
 export default defineComponent({
     emits: ['update:modelValue'],
     props: {
@@ -32,7 +31,7 @@ export default defineComponent({
             ctx.emit('update:modelValue', newValue)
         }
         return {
-            emitValue
+            emitValue,
         }
     },
 })
